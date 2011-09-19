@@ -21,10 +21,10 @@
 /* speaker output vol		   2    2       */
 /* line output vol                      4    2  */
 /* HP output vol		   4    0    4  */
-#define ALC5623_SPK_OUT_VOL			0x02
+#define ALC5623_LINE_OUT_VOL			0x02
 #define ALC5623_HP_OUT_VOL			0x04
 #define ALC5623_MONO_AUX_OUT_VOL		0x06
-#define ALC5623_AUXIN_VOL			0x08
+#define ALC5623_AUX_IN_VOL			0x08
 #define ALC5623_LINE_IN_VOL			0x0A
 #define ALC5623_STEREO_DAC_VOL			0x0C
 #define ALC5623_MIC_VOL				0x0E
@@ -163,6 +163,77 @@
 #define ALC5623_PLL_FR_MCLK			0
 #define ALC5623_PLL_FR_BCK			1
 
-#define REGISTER_COUNT ALC5623_VENDOR_ID2+2
+/* Indexed registers */
+#define IDX_EQ_BAND0_COEFF                      0x00    /* EQ Band 0 Coefficient (LP0:a1) */
+#define IDX_EQ_BAND0_GAIN                       0x01    /* EQ Band 0 Gain (LP0:Ho) */
+
+#define IDX_EQ_BAND1_COEFF0                     0x02    /* EQ Band 1 Coefficient (BP1:a1) */
+#define IDX_EQ_BAND1_COEFF1                     0x03    /* EQ Band 1 Coefficient (BP1:a2) */
+#define IDX_EQ_BAND1_GAIN                       0x04    /* EQ Band 1 Gain (BP1:Ho) */
+
+#define IDX_EQ_BAND2_COEFF0                     0x05    /* EQ Band 2 Coefficient (BP2:a1) */
+#define IDX_EQ_BAND2_COEFF1                     0x06    /* EQ Band 2 Coefficient (BP2:a2) */
+#define IDX_EQ_BAND2_GAIN                       0x07    /* EQ Band 2 Gain (BP2:Ho) */
+
+#define IDX_EQ_BAND3_COEFF0                     0x08    /* EQ Band 3 Coefficient (BP3:a1) */
+#define IDX_EQ_BAND3_COEFF1                     0x09    /* EQ Band 3 Coefficient (BP3:a2) */
+#define IDX_EQ_BAND3_GAIN                       0x0A    /* EQ Band 3 Gain (BP3:Ho) */
+
+#define IDX_EQ_BAND4_COEFF                      0x0B    /* EQ Band 0 Coefficient (HPF:a1) */
+#define IDX_EQ_BAND4_GAIN                       0x0C    /* EQ Band 0 Gain (HPF:Ho) */
+
+#define IDX_EQ_INPUT_VOL                        0x11    /* EQ input volume */
+#define IDX_EQ_OUTPUT_VOL                       0x12    /* EQ output volume */
+
+#define IDX_AUTO_VOL_CTRL1                      0x21    /* Auto volume control 1 */
+#define IDX_AUTO_VOL_CTRL2                      0x22    /* Auto volume control 2 */
+#define IDX_AUTO_VOL_CTRL3                      0x23    /* Auto volume control 3 */
+#define IDX_AUTO_VOL_CTRL4                      0x24    /* Auto volume control 4 */
+#define IDX_AUTO_VOL_CTRL5                      0x25    /* Auto volume control 5 */
+
+#define IDX_DIG_INTERNAL                        0x39    /* Digital internal register */
+
+/* virtual HP mixers regs */
+#define VIRTUAL_HPL_MIXER       (ALC5623_VENDOR_ID2+2)
+#define VIRTUAL_HPR_MIXER       (ALC5623_VENDOR_ID2+4)
+
+/* Virtual index registers: Useful for equalizer settings */
+#define VIRTUAL_IDX_BASE (ALC5623_VENDOR_ID2+6)
+
+#define VIRTUAL_IDX_EQ_BAND0_COEFF                      (VIRTUAL_IDX_BASE+IDX_EQ_BAND0_COEFF)
+#define VIRTUAL_IDX_EQ_BAND0_GAIN                       (VIRTUAL_IDX_BASE+IDX_EQ_BAND0_GAIN)
+
+#define VIRTUAL_IDX_EQ_BAND1_COEFF0             (VIRTUAL_IDX_BASE+IDX_EQ_BAND1_COEFF0)
+#define VIRTUAL_IDX_EQ_BAND1_COEFF1             (VIRTUAL_IDX_BASE+IDX_EQ_BAND1_COEFF1)
+#define VIRTUAL_IDX_EQ_BAND1_GAIN                       (VIRTUAL_IDX_BASE+IDX_EQ_BAND1_GAIN)
+
+#define VIRTUAL_IDX_EQ_BAND2_COEFF0             (VIRTUAL_IDX_BASE+IDX_EQ_BAND2_COEFF0)
+#define VIRTUAL_IDX_EQ_BAND2_COEFF1             (VIRTUAL_IDX_BASE+IDX_EQ_BAND2_COEFF1)
+#define VIRTUAL_IDX_EQ_BAND2_GAIN                       (VIRTUAL_IDX_BASE+IDX_EQ_BAND2_GAIN)
+
+#define VIRTUAL_IDX_EQ_BAND3_COEFF0             (VIRTUAL_IDX_BASE+IDX_EQ_BAND3_COEFF0)
+#define VIRTUAL_IDX_EQ_BAND3_COEFF1             (VIRTUAL_IDX_BASE+IDX_EQ_BAND3_COEFF1)
+#define VIRTUAL_IDX_EQ_BAND3_GAIN                       (VIRTUAL_IDX_BASE+IDX_EQ_BAND3_GAIN)
+
+#define VIRTUAL_IDX_EQ_BAND4_COEFF                      (VIRTUAL_IDX_BASE+IDX_EQ_BAND4_COEFF)
+#define VIRTUAL_IDX_EQ_BAND4_GAIN                       (VIRTUAL_IDX_BASE+IDX_EQ_BAND4_GAIN)
+
+#define VIRTUAL_IDX_EQ_INPUT_VOL                        (VIRTUAL_IDX_BASE+IDX_EQ_INPUT_VOL)
+#define VIRTUAL_IDX_EQ_OUTPUT_VOL                       (VIRTUAL_IDX_BASE+IDX_EQ_OUTPUT_VOL)
+
+#define VIRTUAL_IDX_AUTO_VOL_CTRL1                      (VIRTUAL_IDX_BASE+IDX_AUTO_VOL_CTRL1)
+#define VIRTUAL_IDX_AUTO_VOL_CTRL2                      (VIRTUAL_IDX_BASE+IDX_AUTO_VOL_CTRL2)
+#define VIRTUAL_IDX_AUTO_VOL_CTRL3                      (VIRTUAL_IDX_BASE+IDX_AUTO_VOL_CTRL3)
+#define VIRTUAL_IDX_AUTO_VOL_CTRL4                      (VIRTUAL_IDX_BASE+IDX_AUTO_VOL_CTRL4)
+#define VIRTUAL_IDX_AUTO_VOL_CTRL5                      (VIRTUAL_IDX_BASE+IDX_AUTO_VOL_CTRL5)
+
+#define VIRTUAL_IDX_DIG_INTERNAL                        (VIRTUAL_IDX_BASE+IDX_DIG_INTERNAL)
+
+#define REGISTER_COUNT (VIRTUAL_IDX_DIG_INTERNAL + 2)
+
+/* Streams that can be running */
+#define ALC5623_STREAM_PLAYBACK 1
+#define ALC5623_STREAM_RECORD   2
+#define ALC5623_STREAM_ALL      3
 
 #endif

@@ -90,6 +90,7 @@ static const struct {
 static int tegra_hifi_hw_params(struct snd_pcm_substream *substream,
 					struct snd_pcm_hw_params *params)
 {
+	pr_info("%s++", __func__);
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai 	= rtd->dai->codec_dai;
 	struct snd_soc_dai *cpu_dai 	= rtd->dai->cpu_dai;
@@ -203,6 +204,7 @@ static int tegra_hifi_hw_params(struct snd_pcm_substream *substream,
 static int tegra_voice_hw_params(struct snd_pcm_substream *substream,
 					struct snd_pcm_hw_params *params)
 {
+	pr_info("%s++", __func__);
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai 	= rtd->dai->codec_dai;
 	struct snd_soc_dai *cpu_dai 	= rtd->dai->cpu_dai;
@@ -270,6 +272,7 @@ static int tegra_spdif_hw_params(struct snd_pcm_substream *substream,
 
 static int tegra_codec_startup(struct snd_pcm_substream *substream)
 {
+	pr_info("%s++", __func__);
 	tegra_das_power_mode(true);
 
 	return 0;
@@ -277,17 +280,20 @@ static int tegra_codec_startup(struct snd_pcm_substream *substream)
 
 static void tegra_codec_shutdown(struct snd_pcm_substream *substream)
 {
+	pr_info("%s++", __func__);
 	tegra_das_power_mode(false);
 }
 
 static int tegra_soc_suspend_pre(struct platform_device *pdev, pm_message_t state)
 {
+	pr_info("%s++", __func__);
 	tegra_jack_suspend();
 	return 0;
 }
 
 static int tegra_soc_suspend_post(struct platform_device *pdev, pm_message_t state)
 {
+	pr_info("%s++", __func__);
 	tegra_das_disable_mclk();
 
 	return 0;
@@ -295,6 +301,7 @@ static int tegra_soc_suspend_post(struct platform_device *pdev, pm_message_t sta
 
 static int tegra_soc_resume_pre(struct platform_device *pdev)
 {
+	pr_info("%s++", __func__);
 	tegra_das_enable_mclk();
 
 	return 0;
@@ -302,6 +309,7 @@ static int tegra_soc_resume_pre(struct platform_device *pdev)
 
 static int tegra_soc_resume_post(struct platform_device *pdev)
 {
+	pr_info("%s++", __func__);
 	tegra_jack_resume();
 	return 0;
 }
@@ -355,6 +363,7 @@ void tegra_ext_control(struct snd_soc_codec *codec, int new_con)
 static int tegra_dapm_event_int_spk(struct snd_soc_dapm_widget* w,
                                     struct snd_kcontrol* k, int event)
 {
+	pr_info("%s++", __func__);
         if (tegra_wired_jack_conf.en_spkr != -1) {
                 if (tegra_wired_jack_conf.amp_reg) {
                         if (SND_SOC_DAPM_EVENT_ON(event) &&
@@ -372,10 +381,10 @@ static int tegra_dapm_event_int_spk(struct snd_soc_dapm_widget* w,
                 gpio_set_value_cansleep(tegra_wired_jack_conf.en_spkr,
                         SND_SOC_DAPM_EVENT_ON(event) ? 1 : 0);
 
-                /* the amplifier needs 100ms to enable. wait 100ms after
+                /* the amplifier needs 5ms to enable. wait 5ms after
                  * gpio EN triggered */
                 if (SND_SOC_DAPM_EVENT_ON(event))
-                        msleep(100);
+                        msleep(5);
         }
 
         return 0;
@@ -384,6 +393,7 @@ static int tegra_dapm_event_int_spk(struct snd_soc_dapm_widget* w,
 static int tegra_dapm_event_int_mic(struct snd_soc_dapm_widget* w,
                                     struct snd_kcontrol* k, int event)
 {
+	pr_info("%s++", __func__);
         if (tegra_wired_jack_conf.en_mic_int != -1)
                 gpio_set_value_cansleep(tegra_wired_jack_conf.en_mic_int,
                         SND_SOC_DAPM_EVENT_ON(event) ? 1 : 0);
@@ -398,6 +408,7 @@ static int tegra_dapm_event_int_mic(struct snd_soc_dapm_widget* w,
 static int tegra_dapm_event_ext_mic(struct snd_soc_dapm_widget* w,
                                     struct snd_kcontrol* k, int event)
 {
+	pr_info("%s++", __func__);
         if (tegra_wired_jack_conf.en_mic_ext != -1)
                 gpio_set_value_cansleep(tegra_wired_jack_conf.en_mic_ext,
                         SND_SOC_DAPM_EVENT_ON(event) ? 1 : 0);
@@ -418,16 +429,17 @@ static const struct snd_soc_dapm_widget tegra_dapm_widgets[] = {
 
 /* Tegra machine audio map (connections to the codec pins) */
 static const struct snd_soc_dapm_route audio_map[] = {
+	{"Headphone Jack", NULL, "HPL"},
 	{"Headphone Jack", NULL, "HPR"},
-        {"Headphone Jack", NULL, "HPL"},
-        {"Internal Speaker", "HPOut Mix", "AUXOUTL"},
-        {"Internal Speaker", "HPOut Mix", "AUXOUTR"},
-        {"Mic Bias1", NULL, "Internal Mic"},
-        {"MIC1", NULL, "Mic Bias1"},
+        {"Internal Speaker", NULL, "AUXOUTL"},
+        {"Internal Speaker", NULL, "AUXOUTR"},
+        {"Mic 1 Bias", NULL, "Internal Mic"},
+        {"MIC1", NULL, "Mic 1 Bias"},
 };
 
 static int tegra_codec_init(struct snd_soc_codec *codec)
 {
+	pr_info("%s++", __func__);
 	struct tegra_audio_data* audio_data = codec->socdev->codec_data;
 
 	int ret = 0;
@@ -463,6 +475,25 @@ static int tegra_codec_init(struct snd_soc_codec *codec)
 		snd_soc_dapm_add_routes(codec, audio_map,
 					ARRAY_SIZE(audio_map));
 
+                /* Set endpoints to not connected */
+                snd_soc_dapm_nc_pin(codec, "LINEOUT");
+                snd_soc_dapm_nc_pin(codec, "LINEOUTN");
+                snd_soc_dapm_nc_pin(codec, "LINEINL");
+                snd_soc_dapm_nc_pin(codec, "LINEINR");
+                snd_soc_dapm_nc_pin(codec, "AUXINL");
+                snd_soc_dapm_nc_pin(codec, "AUXINR");
+                snd_soc_dapm_nc_pin(codec, "MIC2");
+
+                /* Set endpoints to default off mode */
+                snd_soc_dapm_enable_pin(codec, "Internal Speaker");
+                snd_soc_dapm_enable_pin(codec, "Internal Mic");
+                snd_soc_dapm_disable_pin(codec, "Headphone Jack");
+
+                ret = snd_soc_dapm_sync(codec);
+                if (ret) {
+                        pr_err("Failed to sync\n");
+                        return ret;
+                }
 
 		/* Add jack detection */
                 ret = tegra_jack_init(codec);
@@ -551,6 +582,7 @@ static struct snd_soc_device tegra_snd_devdata = {
 
 static int __init tegra_init(void)
 {
+	pr_info("%s++", __func__);
         int ret = 0;
 
         tegra_snd_device = platform_device_alloc("soc-audio", -1);

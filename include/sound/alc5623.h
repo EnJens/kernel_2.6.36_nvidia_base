@@ -13,6 +13,7 @@ struct alc5623_platform_data {
 	/* jack detect (gpio/nc/jack detect [12]    */
 	unsigned int jack_det_ctrl;
 	unsigned int    linevdd_mv;              /* Line Vdd in millivolts */
+	unsigned int    linevol_scale;
 	unsigned int    gpio_base;
 };
 
