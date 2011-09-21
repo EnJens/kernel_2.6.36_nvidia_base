@@ -1460,9 +1460,7 @@ static void enable_power_depop(struct snd_soc_codec *codec)
 				ALC5623_PWR_ADD1_SOFTGEN_EN,
 				ALC5623_PWR_ADD1_SOFTGEN_EN);
 
-	snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD3, 
-				ALC5623_ADD3_POWER_EN,
-				ALC5623_ADD3_POWER_EN);
+	snd_soc_write(codec, ALC5623_PWR_MANAG_ADD3, ALC5623_ADD3_POWER_EN);
 
 	snd_soc_update_bits(codec, ALC5623_MISC_CTRL,
 				ALC5623_MISC_HP_DEPOP_MODE2_EN,
@@ -1470,17 +1468,14 @@ static void enable_power_depop(struct snd_soc_codec *codec)
 
 	msleep(500);
 
-	snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD2, 
-				ALC5623_ADD2_POWER_EN,
-				ALC5623_ADD2_POWER_EN);
+	snd_soc_write(codec, ALC5623_PWR_MANAG_ADD2, ALC5623_ADD2_POWER_EN);
 
 	/* avoid writing '1' into 5622 reserved bits */
 	if (alc5623->id == 0x22)
 		snd_soc_write(codec, ALC5623_PWR_MANAG_ADD1,
 			ALC5623_ADD1_POWER_EN_5622);
 	else
-		snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD1,
-			ALC5623_ADD1_POWER_EN,ALC5623_ADD1_POWER_EN);
+		snd_soc_write(codec, ALC5623_PWR_MANAG_ADD1, ALC5623_ADD1_POWER_EN);
 
 	/* disable HP Depop2 */
 	snd_soc_update_bits(codec, ALC5623_MISC_CTRL,
@@ -1507,9 +1502,10 @@ static int alc5623_set_bias_level(struct snd_soc_codec *codec,
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
-		enable_power_depop(codec);
+//		enable_power_depop(codec);
 		break;
 	case SND_SOC_BIAS_PREPARE:
+		enable_power_depop(codec);
 		break;
 	case SND_SOC_BIAS_STANDBY:
 

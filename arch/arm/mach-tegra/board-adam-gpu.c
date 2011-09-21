@@ -245,7 +245,7 @@ static struct tegra_dc_out adam_hdmi_out = {
 
 static struct tegra_dc_platform_data adam_disp1_pdata = {
 	.flags		= TEGRA_DC_FLAG_ENABLED,
-	.emc_clk_rate	= 300000000,
+//	.emc_clk_rate	= 300000000,
 	.default_out	= &adam_disp1_out,
 	.fb		= &adam_fb_data,
 };
