@@ -165,8 +165,9 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data4 = {
 static struct platform_device *adam_sdhci_devices[] __initdata = {
 	&tegra_sdhci_device1,
 //	&tegra_sdhci_device2,
-	&tegra_sdhci_device3,
+//have to init these out of order so that the eMMC card is registered first
 	&tegra_sdhci_device4,
+	&tegra_sdhci_device3,
 };
 
 static int __init adam_wifi_init(void)
