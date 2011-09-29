@@ -77,24 +77,24 @@ static const struct {
         u16 reg;        /* register */
         u16 val;        /* value */
 } alc5623_reg_default[] = {
-        {ALC5623_LINE_OUT_VOL                            , 0xE0E0 }, /* Muted */
-        {ALC5623_HP_OUT_VOL                             , 0x4040 }, /* Unmute left and right channels, enable 0 cross detector, 0db volume */
-        {ALC5623_MONO_AUX_OUT_VOL                       , 0x4040 }, /* Unmute L+2 */
+        {ALC5623_LINE_OUT_VOL                           , 0x8080 }, /* Muted */
+        {ALC5623_HP_OUT_VOL                             , 0x3030 }, /* Unmute left and right channels, enable 0 cross detector, 0db volume */
+        {ALC5623_MONO_AUX_OUT_VOL                       , 0x0000 }, 
         {ALC5623_AUX_IN_VOL                             	, 0xFF1F }, /* Mute Aux In volume */
         {ALC5623_LINE_IN_VOL                            , 0xFF1F }, /* Mute Line In volume */
-        {ALC5623_STEREO_DAC_VOL                         , 0x6808 }, /* Mute volume output to Mono and Speaker */
+        {ALC5623_STEREO_DAC_VOL                         , 0x0909 },
         {ALC5623_MIC_VOL                                , 0x0808 }, /* Mic volume = 0db */
         {ALC5623_MIC_ROUTING_CTRL                       , 0xF0F0 }, /* Mute mic volume to Headphone, Speaker and Mono mixers, Differential mode enabled */
         {ALC5623_ADC_REC_GAIN                           , 0xF58B },
         {ALC5623_ADC_REC_MIXER                          , 0x3F3F }, /* Mic1 as recording sources */
-        {ALC5623_OUTPUT_MIXER_CTRL                      , 0xD340 }, 
-        {ALC5623_MIC_CTRL                               , 0x0F02 }, /* 1.8uA short current det, Bias volt =0.9Avdd, +40db gain boost */
-        {ALC5623_DAI_CONTROL                            , 0x8000 }, /* Slave interfase */
-        {ALC5623_STEREO_AD_DA_CLK_CTRL           	, 0x166d},
-        {ALC5623_PWR_MANAG_ADD1                         , 0xCD66 }, 
-        {ALC5623_PWR_MANAG_ADD2                         , 0x37F3 }, 
+        {ALC5623_OUTPUT_MIXER_CTRL                      , 0x1740 }, 
+        {ALC5623_MIC_CTRL                               , 0x0400 }, /* 1.8uA short current det, Bias volt =0.9Avdd, +40db gain boost */
+        {ALC5623_DAI_CONTROL                            , 0x8010 }, /* Slave interfase */
+        {ALC5623_STEREO_AD_DA_CLK_CTRL           	, 0x066d},
+        {ALC5623_PWR_MANAG_ADD1                         , 0xCD33 }, 
+        {ALC5623_PWR_MANAG_ADD2                         , 0x3730 }, 
         {ALC5623_PWR_MANAG_ADD3                         , 0xE63A }, 
-        {ALC5623_ADD_CTRL_REG                           , 0xD300 }, 
+        {ALC5623_ADD_CTRL_REG                           , 0xb300 }, 
         {ALC5623_GLOBAL_CLK_CTRL_REG                    , 0x0000 }, 
         {ALC5623_PLL_CTRL                               , 0x0000 },
         {ALC5623_GPIO_OUTPUT_PIN_CTRL                   , 0x0002 }, /* Drive High */
@@ -1452,6 +1452,25 @@ static void alc5623_sync_cache(struct snd_soc_codec *codec)
 	(ALC5623_PWR_ADD1_SHORT_CURR_DET_EN \
 	| ALC5623_PWR_ADD1_HP_OUT_AMP)
 
+#if 1
+static void enable_power_depop(struct snd_soc_codec *codec)
+{
+	struct alc5623 *alc5623 = snd_soc_codec_get_drvdata(codec);
+
+	snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD3,
+				ALC5623_PWR_ADD3_MAIN_BIAS,
+				ALC5623_PWR_ADD3_MAIN_BIAS);
+
+	snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD1,
+				ALC5623_PWR_ADD1_SOFTGEN_EN,
+				ALC5623_PWR_ADD1_SOFTGEN_EN);
+
+	snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD2,
+				ALC5623_ADD2_POWER_EN,
+				ALC5623_ADD2_POWER_EN);
+
+}
+#else
 static void enable_power_depop(struct snd_soc_codec *codec)
 {
 	struct alc5623 *alc5623 = snd_soc_codec_get_drvdata(codec);
@@ -1483,6 +1502,7 @@ static void enable_power_depop(struct snd_soc_codec *codec)
 				0);
 
 }
+#endif
 
 static int alc5623_set_bias_level(struct snd_soc_codec *codec,
 				      enum snd_soc_bias_level level)
@@ -1502,10 +1522,10 @@ static int alc5623_set_bias_level(struct snd_soc_codec *codec,
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
-//		enable_power_depop(codec);
+		enable_power_depop(codec);
 		break;
 	case SND_SOC_BIAS_PREPARE:
-		enable_power_depop(codec);
+//		enable_power_depop(codec);
 		break;
 	case SND_SOC_BIAS_STANDBY:
 
