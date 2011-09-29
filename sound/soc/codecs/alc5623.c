@@ -77,12 +77,12 @@ static const struct {
         u16 reg;        /* register */
         u16 val;        /* value */
 } alc5623_reg_default[] = {
-        {ALC5623_LINE_OUT_VOL                           , 0x8080 }, /* Muted */
-        {ALC5623_HP_OUT_VOL                             , 0x3030 }, /* Unmute left and right channels, enable 0 cross detector, 0db volume */
-        {ALC5623_MONO_AUX_OUT_VOL                       , 0x0000 }, 
-        {ALC5623_AUX_IN_VOL                             	, 0xFF1F }, /* Mute Aux In volume */
+        {ALC5623_LINE_OUT_VOL                           , 0xE0E0 }, /* Muted */
+        {ALC5623_HP_OUT_VOL                             , 0x4040 }, /* Unmute left and right channels, enable 0 cross detector, 0db volume */
+        {ALC5623_MONO_AUX_OUT_VOL                       , 0x4040 }, 
+        {ALC5623_AUX_IN_VOL                             , 0xFF1F }, /* Mute Aux In volume */
         {ALC5623_LINE_IN_VOL                            , 0xFF1F }, /* Mute Line In volume */
-        {ALC5623_STEREO_DAC_VOL                         , 0x0909 },
+        {ALC5623_STEREO_DAC_VOL                         , 0x6808 },
         {ALC5623_MIC_VOL                                , 0x0808 }, /* Mic volume = 0db */
         {ALC5623_MIC_ROUTING_CTRL                       , 0xF0F0 }, /* Mute mic volume to Headphone, Speaker and Mono mixers, Differential mode enabled */
         {ALC5623_ADC_REC_GAIN                           , 0xF58B },
